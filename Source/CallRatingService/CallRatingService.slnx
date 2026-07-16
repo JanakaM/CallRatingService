@@ -2,7 +2,12 @@
   <Folder Name="/ApiLayer/">
     <Project Path="CallRatingService.Api/CallRatingService.Api.csproj" />
   </Folder>
-  <Folder Name="/DomainLayer/" />
+  <Folder Name="/DomainLayer/">
+    <Project Path="CallRatingService.Model/CallRatingService.Model.csproj" />
+  </Folder>
   <Folder Name="/InfrastuctureLayer/" />
   <Folder Name="/ServiceLayer/" />
+  <Folder Name="/Tests/">
+    <Project Path="CallRatingServiceTests/CallRatingServiceModelTests.csproj" />
+  </Folder>
 </Solution>
