@@ -1,7 +1,10 @@
-﻿namespace CallRatingService.Model
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CallRatingService.Model
 {
     public class CallDetail
     {
+        [Key]
         public int CallId { get; set; }
 
         public int CustomerNumber { get; set; }

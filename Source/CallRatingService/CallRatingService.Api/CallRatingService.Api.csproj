@@ -7,7 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="14.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.16.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CallRatingService.Application\CallRatingService.Application.csproj" />
+    <ProjectReference Include="..\CallRatingService.Infrastructure\CallRatingService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
