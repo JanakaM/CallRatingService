@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/ApiLayer/">
+    <Project Path="CallRatingService.Api/CallRatingService.Api.csproj" />
+  </Folder>
+  <Folder Name="/DomainLayer/" />
+  <Folder Name="/InfrastuctureLayer/" />
+  <Folder Name="/ServiceLayer/" />
+</Solution>
