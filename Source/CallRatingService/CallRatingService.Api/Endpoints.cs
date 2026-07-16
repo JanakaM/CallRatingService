@@ -3,7 +3,9 @@
 
 
 using CallRatingService.Application;
+using CallRatingService.Application.Command;
 using CallRatingService.Model;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CallRatingService.Api
@@ -19,9 +21,10 @@ namespace CallRatingService.Api
         }
 
         private static async Task<int> AddCallDetail([FromBody]CallDetailRequest request,
-            [FromServices] ICallDetailRepository detailRepository)
+            [FromServices] ISender sender)
         {
-            var detail = new CallDetail()
+
+            var commandRequest = new CallDetailCommandRequest()
             {
                 CustomerNumber = request.CustomerNumber,
                 CallDate = request.CallDate,
@@ -29,7 +32,7 @@ namespace CallRatingService.Api
                 DurationSeconds = request.DurationSeconds
             };
 
-            var id = detailRepository.SaveCallDetail(detail);
+            var id = await sender.Send(commandRequest);
 
             return id;
         }

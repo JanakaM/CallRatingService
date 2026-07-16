@@ -3,12 +3,20 @@ using CallRatingService.Api;
 using CallRatingService.Application;
 using CallRatingService.Infrastructure;
 using Scalar.AspNetCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+// Register Command & Query handlers 
+builder.Services.AddMediatR(configure =>
+{
+    var applicationAssembly = Assembly.Load("CallRatingService.Application");
+    configure.RegisterServicesFromAssembly(applicationAssembly);
+});
 
 // setting up DBContext and Add DI
 builder.Services.Configure<ApiConfiguration>(builder.Configuration.GetSection("Infrastructure"));
