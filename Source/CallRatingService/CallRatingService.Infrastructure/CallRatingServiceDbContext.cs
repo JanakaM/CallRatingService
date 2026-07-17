@@ -14,6 +14,20 @@ namespace CallRatingService.Infrastructure
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<CustomerRateCard>()
+                       .HasMany(c => c.Rates)
+                       .WithOne()
+                       .HasForeignKey(r => r.CustomerId)
+                       .HasPrincipalKey(c => c.CustomerId)
+                       .OnDelete(DeleteBehavior.Cascade);
+        }
+
        public DbSet<CallDetail> CallDetails { get; set; }
+       public DbSet<CustomerRateCard> CustomerRateCards { get; set; }
+       public DbSet<CustomerRate> CustomerRates { get; set; }
     }
 }

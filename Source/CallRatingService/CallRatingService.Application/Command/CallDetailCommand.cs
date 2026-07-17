@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CallRatingService.Application.Command
 {
-    public class CallDetailCommandRequest : IRequest<int>
+    public class CallDetailCommand : IRequest<int>
     {
         public int CustomerNumber { get; set; }
 

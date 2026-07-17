@@ -10,6 +10,8 @@ namespace CallRatingService.Infrastructure
     {
         DbSet<CallDetail> CallDetails { get; set; }
 
+        DbSet<CustomerRateCard> CustomerRateCards { get; set; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

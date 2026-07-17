@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CallRatingService.Application.Command
 {
-    public class CallDetailCommandHandler : IRequestHandler<CallDetailCommandRequest, int>
+    public class CallDetailCommandHandler : IRequestHandler<CallDetailCommand, int>
     {
         private readonly ICallDetailRepository _detailRepository;
 
@@ -15,7 +15,7 @@ namespace CallRatingService.Application.Command
             _detailRepository = detailRepository;
         }
 
-        public async Task<int> Handle(CallDetailCommandRequest request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CallDetailCommand request, CancellationToken cancellationToken)
         {
 
             var callDetail = new CallDetail()
