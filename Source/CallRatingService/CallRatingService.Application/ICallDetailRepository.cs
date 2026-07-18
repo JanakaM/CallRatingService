@@ -4,6 +4,6 @@ namespace CallRatingService.Application
 {
     public interface ICallDetailRepository
     {
-        Task<int> SaveCallDetail(CallDetail callDetail);
+        Task<int> SaveCallDetail(List<CallDetail> callDetail);
     }
 }

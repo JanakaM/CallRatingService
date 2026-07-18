@@ -6,29 +6,36 @@ using System.Text;
 
 namespace CallRatingService.Application.Command
 {
-    public class CallDetailCommandHandler : IRequestHandler<CallDetailCommand, int>
+    public class CallDetailCommandHandler : IRequestHandler<CallDetailCommand, List<RatedOutputResponse>>
     {
         private readonly ICallDetailRepository _detailRepository;
+        private readonly ICallRateService _callRateService;
 
-        public CallDetailCommandHandler(ICallDetailRepository detailRepository)
+        public CallDetailCommandHandler(
+            ICallDetailRepository detailRepository,
+            ICallRateService callRateService)
         {
             _detailRepository = detailRepository;
+            _callRateService = callRateService;
         }
 
-        public async Task<int> Handle(CallDetailCommand request, CancellationToken cancellationToken)
+        public async Task<List<RatedOutputResponse>> Handle(CallDetailCommand request, CancellationToken cancellationToken)
         {
-
-            var callDetail = new CallDetail()
+            var callDetail = request.CallDetails.Select(c => new CallDetail()
             {
-                CustomerNumber = request.CustomerNumber,
-                CallDate = request.CallDate,
-                DestinationNumber = request.DestinationNumber,
-                DurationSeconds = request.DurationSeconds
-            };
+                CustomerId = c.CustomerNumber,
+                CallDate = c.CallDate,
+                DestinationNumber = c.DestinationNumber,
+                DurationSeconds = c.DurationSeconds
+            }).ToList();
 
-            var id = await _detailRepository.SaveCallDetail(callDetail);
+            // Clculate call cost
+            var result = await _callRateService.CalculateCallRate(callDetail);
 
-            return id;
+            // save the CDR 
+            await _detailRepository.SaveCallDetail(callDetail);
+
+            return result;
         }
     }
 }

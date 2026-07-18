@@ -6,11 +6,16 @@ using System.Text;
 
 namespace CallRatingService.Application.Command
 {
-    public class CallDetailCommand : IRequest<int>
+    public class CallDetailCommand : IRequest<List<RatedOutputResponse>>
+    {
+        public List<CallData> CallDetails { get; set; }
+    }
+
+    public class CallData
     {
         public int CustomerNumber { get; set; }
 
-        public DateTime CallDate { get; set; }
+        public DateTime CallDate { get; set; } 
 
         public string DestinationNumber { get; set; }
 

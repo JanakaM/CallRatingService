@@ -12,6 +12,7 @@
     <Project Path="CallRatingService.Infrastructure/CallRatingService.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/Tests/">
+    <Project Path="CallRatingServiceApplicationTests/CallRatingServiceApplicationTests.csproj" Id="3b647e13-a1c0-427d-8dce-1c8b55f2d2ce" />
     <Project Path="CallRatingServiceTests/CallRatingServiceModelTests.csproj" />
   </Folder>
 </Solution>

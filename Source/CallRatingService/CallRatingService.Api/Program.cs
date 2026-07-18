@@ -27,6 +27,7 @@ builder.Services.AddCallRatingDbContext(apiConfiguration.ConnectionString);
 // DI
 builder.Services.AddScoped<ICallDetailRepository, CallDetailRepository>();
 builder.Services.AddScoped<IRateCardRepository, RateCardRepository>();
+builder.Services.AddScoped<ICallRateService, CallRateService>();
 
 var app = builder.Build();
 

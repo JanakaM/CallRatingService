@@ -15,13 +15,13 @@ namespace CallRatingService.Infrastructure
             _dbContext = dbContext;
         }
 
-        public async Task<int> SaveCallDetail(CallDetail callDetail)
+        public async Task<int> SaveCallDetail(List<CallDetail> callDetail)
         {
-            var id = _dbContext.CallDetails.Add(callDetail) ;
+             _dbContext.CallDetails.AddRange(callDetail) ;
 
-            await _dbContext.SaveChangesAsync();
+            var rowaffected = await _dbContext.SaveChangesAsync();
 
-            return callDetail.CallId;
+            return rowaffected;
         }
     }
 }

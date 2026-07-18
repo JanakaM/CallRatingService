@@ -1,8 +1,4 @@
-﻿
-
-
-
-using CallRatingService.Application;
+﻿using CallRatingService.Application;
 using CallRatingService.Application.Command;
 using CallRatingService.Application.Query;
 using CallRatingService.Model;
@@ -25,29 +21,36 @@ namespace CallRatingService.Api
             appGroup.MapGet("/rateCard", GetCustomerRateCard);
         }
 
-        private static async Task<int> AddCallDetail(
-            [FromBody]CallDetailRequest request,
+        private static async Task<IResult> AddCallDetail(
+            [FromBody]List<CallDetailRequest> request,
             [FromServices] ISender sender)
         {
 
+            if (request == null || request.Count == 0 )
+            {
+                return Results.BadRequest();
+            }
+
             var command = new CallDetailCommand()
             {
-                CustomerNumber = request.CustomerNumber,
-                CallDate = request.CallDate,
-                DestinationNumber = request.DestinationNumber,
-                DurationSeconds = request.DurationSeconds
+                CallDetails = request.Select(r => new CallData()
+                {
+                    CustomerNumber = r.CustomerNumber,
+                    CallDate = r.CallDate,
+                    DestinationNumber = r.DestinationNumber,
+                    DurationSeconds = r.DurationSeconds
+                }).ToList()
             };
 
-            var id = await sender.Send(command);
+            var response = await sender.Send(command);
 
-            return id;
+            return Results.Ok(response);
         }
 
     private static async Task<int> AddCustomerRateCard(
         [FromBody] RateCardRequest request,
         [FromServices] ISender sender)
         {
-
             var command = new RateCardCommand()
             {
                 CustomerId = request.CustomerId,

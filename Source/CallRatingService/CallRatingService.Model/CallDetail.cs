@@ -7,7 +7,7 @@ namespace CallRatingService.Model
         [Key] 
         public int CallId { get; set; }
 
-        public int CustomerNumber { get; set; }
+        public int CustomerId { get; set; }
 
         public DateTime CallDate { get; set; }
 
