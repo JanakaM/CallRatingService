@@ -19,6 +19,9 @@ namespace CallRatingService.Api
             appGroup.MapPost("/rateCard", AddCustomerRateCard);
 
             appGroup.MapGet("/rateCard", GetCustomerRateCard);
+
+            appGroup.MapGet("/customer", GetCustomers);
+
         }
 
         private static async Task<IResult> AddCallDetail(
@@ -72,6 +75,20 @@ namespace CallRatingService.Api
             var query = new GetCustomerRateCardQuery()
             {
                 CustomerId = customerId
+            };
+
+            var response = await sender.Send(query);
+
+            return response;
+        }
+
+    private static async Task<List<CustomerResponse>> GetCustomers(
+    [FromQuery] int page,
+    [FromServices] ISender sender)
+        {
+            var query = new GetCustomersQuery()
+            {
+                page = page,
             };
 
             var response = await sender.Send(query);

@@ -1,4 +1,5 @@
-﻿using CallRatingService.Model;
+﻿using CallRatingService.Application.Exceptions;
+using CallRatingService.Model;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,24 +11,29 @@ namespace CallRatingService.Application.Command
     {
         private readonly ICallDetailRepository _detailRepository;
         private readonly ICallRateService _callRateService;
+        private readonly ICustomerRepository _customerRepository;
 
         public CallDetailCommandHandler(
             ICallDetailRepository detailRepository,
-            ICallRateService callRateService)
+            ICallRateService callRateService,
+            ICustomerRepository customerRepository)
         {
             _detailRepository = detailRepository;
             _callRateService = callRateService;
+            _customerRepository = customerRepository;
         }
 
         public async Task<List<RatedOutputResponse>> Handle(CallDetailCommand request, CancellationToken cancellationToken)
         {
             var callDetail = request.CallDetails.Select(c => new CallDetail()
             {
-                CustomerId = c.CustomerNumber,
+                CallDetailCustomerId = c.CustomerNumber,
                 CallDate = c.CallDate,
                 DestinationNumber = c.DestinationNumber,
                 DurationSeconds = c.DurationSeconds
             }).ToList();
+
+            await Validate(callDetail);
 
             // Clculate call cost
             var result = await _callRateService.CalculateCallRate(callDetail);
@@ -36,6 +42,19 @@ namespace CallRatingService.Application.Command
             await _detailRepository.SaveCallDetail(callDetail);
 
             return result;
+        }
+
+        private async Task Validate(List<CallDetail> callDetail)
+        {
+            foreach (var item in callDetail)
+            {
+                var customer = await _customerRepository.GetCustomerAsync(item.CallDetailCustomerId);
+
+                if (customer == null)
+                {
+                    throw new NotFoundException($"Customer with CustomerId {item.CallDetailCustomerId} does not exist.");
+                }
+            }
         }
     }
 }

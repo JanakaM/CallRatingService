@@ -4,10 +4,9 @@ namespace CallRatingService.Model
 {
     public class CallDetail
     {
-        [Key] 
         public int CallId { get; set; }
 
-        public int CustomerId { get; set; }
+        public int CallDetailCustomerId { get; set; }
 
         public DateTime CallDate { get; set; }
 

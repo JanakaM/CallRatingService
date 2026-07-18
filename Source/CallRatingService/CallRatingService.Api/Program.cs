@@ -28,8 +28,15 @@ builder.Services.AddCallRatingDbContext(apiConfiguration.ConnectionString);
 builder.Services.AddScoped<ICallDetailRepository, CallDetailRepository>();
 builder.Services.AddScoped<IRateCardRepository, RateCardRepository>();
 builder.Services.AddScoped<ICallRateService, CallRateService>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+
+// Register Global ExceptionHandle
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 
 // Configure the HTTP request pipeline.
@@ -43,8 +50,7 @@ app.UseHttpsRedirection();
 
 app.MapEndpoints();
 
-// Temp 
-
+// This section is only for Demo perpose, In real world will be use Migration and update DB  
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<CallRatingServiceDbContext>();
@@ -54,8 +60,3 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

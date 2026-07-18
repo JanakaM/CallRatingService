@@ -20,14 +20,14 @@ namespace CallRatingService.Application
 
                 var type = CallType.GetCallTypeByNumber(callDetail.DestinationNumber);
 
-                var rateCard = await _rateCardRepository.GetRateCardAsync(callDetail.CustomerId);
+                var rateCard = await _rateCardRepository.GetRateCardAsync(callDetail.CallDetailCustomerId);
 
                 var rate = rateCard.Rates.Find(r => r.CallType == type.Type);
                 var minute = CalculateBillableMinutes(callDetail.DurationSeconds);
 
                 response.Add(new RatedOutputResponse()
                 {
-                    CustomerId = callDetail.CustomerId,
+                    CustomerId = callDetail.CallDetailCustomerId,
                     DestinationNumber = callDetail.DestinationNumber,
                     CallType = type.Type,
                     DurationSeconds = callDetail.DurationSeconds,

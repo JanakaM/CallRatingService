@@ -34,7 +34,6 @@ namespace CallRatingServiceModelTests
         [InlineData("+33142277555", "International")] // international higher prefix
         public void Given_PhoneNumber_GetCallType(string phoneNumber, string expected)
         {
-
             // Act
 
             var type = CallType.GetCallTypeByNumber(phoneNumber);
