@@ -1,5 +1,6 @@
 ﻿using CallRatingService.Application;
 using CallRatingService.Application.Command;
+using CallRatingService.Application.Exceptions;
 using CallRatingService.Application.Query;
 using CallRatingService.Model;
 using MediatR;
@@ -31,7 +32,7 @@ namespace CallRatingService.Api
 
             if (request == null || request.Count == 0 )
             {
-                return Results.BadRequest();
+                throw new InvalidRequestException("Empty request");
             }
 
             var command = new CallDetailCommand()
@@ -54,6 +55,14 @@ namespace CallRatingService.Api
         [FromBody] RateCardRequest request,
         [FromServices] ISender sender)
         {
+            if (request == null 
+                || request.CustomerId == 0 
+                || request.Rates == null 
+                || !request.Rates.Any())
+            {
+                throw new InvalidRequestException("Empty request");
+            }
+
             var command = new RateCardCommand()
             {
                 CustomerId = request.CustomerId,
@@ -83,12 +92,12 @@ namespace CallRatingService.Api
         }
 
     private static async Task<List<CustomerResponse>> GetCustomers(
-    [FromQuery] int page,
+    [FromQuery] int? page,
     [FromServices] ISender sender)
         {
             var query = new GetCustomersQuery()
             {
-                page = page,
+                page = page ?? 1,
             };
 
             var response = await sender.Send(query);

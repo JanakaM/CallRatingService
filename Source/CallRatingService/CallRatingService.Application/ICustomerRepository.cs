@@ -7,7 +7,7 @@ namespace CallRatingService.Application
 {
     public interface ICustomerRepository
     {
-        Task<Customer?> GetCustomerWithRatesAsync(int customerId);
+        Task<Customer> GetCustomerWithRatesAsync(int customerId);
         Task<Customer> GetCustomerAsync(int customerId);
         Task<List<Customer>> GetCustomersAsync(int page, int numberOfRecords);
     }

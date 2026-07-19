@@ -33,7 +33,7 @@ namespace CallRatingService.Application.Command
                 bool isValidCall = true;
 
                 // Validate Destination Number
-                isValidCall = ValidateDestinationNumber(result, item);
+                    isValidCall = ValidateDestinationNumber(result, item);
                 if (!isValidCall)
                 {
                     continue;
@@ -72,7 +72,7 @@ namespace CallRatingService.Application.Command
                 var callDetail = new CallDetail
                 {
                     CallDate = parsedDate,
-                    CallDetailCustomerId = item.CustomerNumber,
+                    CustomerId = item.CustomerNumber,
                     DestinationNumber = item.DestinationNumber,
                     DurationSeconds = item.DurationSeconds
                 };

@@ -22,6 +22,15 @@ namespace CallRatingService.Infrastructure
                 .Include(r => r.Rates)
                 .FirstOrDefaultAsync(c => c.CustomerId == cutomerId);
 
+            if (rateCard == null)
+            {
+                return new CustomerRateCardResponse()
+                {
+                    CustomerID = cutomerId,
+                    Rates = new List<CutomerRates>()
+                };
+            }
+
             var response = new CustomerRateCardResponse()
             {
                 CustomerID = cutomerId,

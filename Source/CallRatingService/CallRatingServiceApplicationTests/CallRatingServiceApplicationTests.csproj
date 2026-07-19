@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CallRatingService.Application\CallRatingService.Application.csproj" />
+    <ProjectReference Include="..\CallRatingService.Model\CallRatingService.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,7 +6,7 @@
 2. Clone the repository.
 3. Once clone the repo update appsetting.json file connectionstring property value as your cloned repo path. Data.db file is located in SolutionItems folder. 
 Example  :   "ConnectionString": "Data Source=C:/Janaka/GitHub/CallRatingService/SolutionItems/Data.Db"
-4. Initially Data.db is empty database. Once solution run Db schemas wiil be creted. 
+4. Initially Data.db is empty database. Once solution run Db schemas wiil be created. 
 5. OpenAPi / Scalar link can be used to make APi requests. example link
    https://localhost:7226/scalar/v1#tag/endpoints (change the port number as required)
 6. To view prepopulated customers please use this endpoint. set 1 as page querystring parameter.
@@ -18,6 +18,8 @@ Example  :   "ConnectionString": "Data Source=C:/Janaka/GitHub/CallRatingService
 1. I have create Datbase schemas step in the program.cs to simplyfy the solution runing in another machine. Did not use any migration steps.  (await dbContext.Database.EnsureCreatedAsync();)
 
 2. I have assume Customers table is having valid customers. (I have set up prepopulate 10 customers for demo perpose) .In real world application will create Add customer endpoint.   
+
+3. Customer rate card update is delete existing rates and Add rates as request. So new rate card request represent customer rate card.
 
 
 ## If I spend more time on this project Things I would do to Improve the Solution

@@ -26,11 +26,18 @@ namespace CallRatingService.Api
 
             if (exception is NotFoundException)
             {
-                statusCode = StatusCodes.Status400BadRequest;
+                statusCode = StatusCodes.Status404NotFound;
                 title = "Bad Request";
                 detail = exception.Message;
             }
 
+
+            if (exception is InvalidRequestException)
+            {
+                statusCode = StatusCodes.Status400BadRequest;
+                title = "Bad Request";
+                detail = exception.Message;
+            }
             httpContext.Response.StatusCode = statusCode;
             httpContext.Response.ContentType = "application/json";
 

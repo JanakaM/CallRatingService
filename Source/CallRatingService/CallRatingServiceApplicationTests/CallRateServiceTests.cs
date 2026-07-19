@@ -15,7 +15,7 @@ namespace CallRatingServiceApplicationTests
             var customerId = 1001;
             var destinationNumber = "+4401234564587";
 
-            var callData = new CallDetail() { CallDetailCustomerId = customerId, DestinationNumber = destinationNumber, DurationSeconds = 125 };
+            var callData = new CallDetail() { CustomerId = customerId, DestinationNumber = destinationNumber, DurationSeconds = 125 };
 
             var ratecard = new CustomerRateCardResponse()
             {
