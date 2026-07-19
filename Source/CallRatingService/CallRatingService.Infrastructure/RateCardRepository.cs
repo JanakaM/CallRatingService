@@ -39,19 +39,27 @@ namespace CallRatingService.Infrastructure
         {
             // get existing RateCard for the Customer
 
-            var rateCards = await _dbContext
+            var existingRateCard = await _dbContext
                 .CustomerRateCards
                 .Include(r => r.Rates)
                 .FirstOrDefaultAsync(c  => c.CustomerId == customerRateCard.CustomerId);
 
-            if (rateCards == null)
+            if (existingRateCard == null)
             {
                 _dbContext.CustomerRateCards.Add(customerRateCard);
                 await _dbContext.SaveChangesAsync();
                 return customerRateCard.RateCardId;
             }
 
-            // ToDo Update or delete existing rates
+            // Delete existing rates and add requested rates
+            existingRateCard.Rates.Clear();
+
+            foreach (var newRate in customerRateCard.Rates)
+            {
+                existingRateCard.Rates.Add(newRate);
+            }
+
+            await _dbContext.SaveChangesAsync();
 
             return customerRateCard.RateCardId;
         }

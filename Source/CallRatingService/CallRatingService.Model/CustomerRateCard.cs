@@ -7,7 +7,6 @@ namespace CallRatingService.Model
 {
     public class CustomerRateCard
     {
-        [Key]
         public int RateCardId { get; set; }
         public int CustomerId { get; set; }
 

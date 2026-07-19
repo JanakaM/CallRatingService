@@ -16,7 +16,7 @@ namespace CallRatingService.Infrastructure
         public async Task<Customer> GetCustomerAsync(int customerId)
         {
             var customer = await _dbContext.Customers
-                .FirstOrDefaultAsync(x => x.CustomerId == customerId);
+                .FirstOrDefaultAsync(x => x.CustomerId == customerId);   
 
             return customer;
         }
@@ -32,6 +32,16 @@ namespace CallRatingService.Infrastructure
                 .ToListAsync();
 
             return customers;
+        }
+
+        public async Task<Customer?> GetCustomerWithRatesAsync(int customerId)
+        {
+            var customer =  await _dbContext.Customers
+                            .Include(c => c.CustomerRateCard)
+                            .ThenInclude(card => card.Rates)
+                            .FirstOrDefaultAsync(c => c.CustomerId == customerId);
+
+            return customer;
         }
     }
 }

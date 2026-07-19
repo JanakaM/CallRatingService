@@ -15,7 +15,7 @@ namespace CallRatingService.Application.Command
     {
         public int CustomerNumber { get; set; }
 
-        public DateTime CallDate { get; set; } 
+        public string CallDate { get; set; }
 
         public string DestinationNumber { get; set; }
 

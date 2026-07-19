@@ -21,7 +21,6 @@ namespace CallRatingService.Application.Query
 
             var resposne = customers.Select(c => new CustomerResponse()
             {
-                Id = c.Id,
                 CustomerId = c.CustomerId
             }).ToList();
 

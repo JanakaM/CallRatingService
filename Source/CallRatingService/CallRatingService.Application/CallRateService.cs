@@ -12,32 +12,27 @@ namespace CallRatingService.Application
             _rateCardRepository = rateCardRepository;
         }
 
-        public async Task<List<RatedOutputResponse>> CalculateCallRate(List<CallDetail> callDetails)
+        public async Task<RatedOutputResponse> CalculateCallRate(CallDetail callDetail)
         {
-            var response = new List<RatedOutputResponse>();
+            var type = CallType.GetCallTypeByNumber(callDetail.DestinationNumber);
 
-            foreach (var callDetail in callDetails) {
+            var rateCard = await _rateCardRepository.GetRateCardAsync(callDetail.CallDetailCustomerId);
 
-                var type = CallType.GetCallTypeByNumber(callDetail.DestinationNumber);
+            var rate = rateCard.Rates.Find(r => r.CallType == type.Type);
+            var minute = CalculateBillableMinutes(callDetail.DurationSeconds);
 
-                var rateCard = await _rateCardRepository.GetRateCardAsync(callDetail.CallDetailCustomerId);
+            var result = new RatedOutputResponse()
+            {
+                CustomerId = callDetail.CallDetailCustomerId,
+                DestinationNumber = callDetail.DestinationNumber,
+                CallType = type.Type,
+                DurationSeconds = callDetail.DurationSeconds,
+                BillableMinutes = minute,
+                RateApplied = rate.CostperMinute,
+                Cost = rate.CostperMinute * minute
+            };
 
-                var rate = rateCard.Rates.Find(r => r.CallType == type.Type);
-                var minute = CalculateBillableMinutes(callDetail.DurationSeconds);
-
-                response.Add(new RatedOutputResponse()
-                {
-                    CustomerId = callDetail.CallDetailCustomerId,
-                    DestinationNumber = callDetail.DestinationNumber,
-                    CallType = type.Type,
-                    DurationSeconds = callDetail.DurationSeconds,
-                    BillableMinutes = minute,
-                    RateApplied = rate.CostperMinute,
-                    Cost = rate.CostperMinute * minute
-                });
-            }
-
-            return response;
+            return result;
         }
 
         private int CalculateBillableMinutes(int durationSeconds)

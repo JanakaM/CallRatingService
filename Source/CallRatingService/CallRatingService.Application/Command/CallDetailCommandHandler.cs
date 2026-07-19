@@ -1,14 +1,14 @@
-﻿using CallRatingService.Application.Exceptions;
-using CallRatingService.Model;
+﻿using CallRatingService.Model;
+using CallRatingService.Model.Enum;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CallRatingService.Application.Command
 {
     public class CallDetailCommandHandler : IRequestHandler<CallDetailCommand, List<RatedOutputResponse>>
     {
+        private static readonly Regex E164PhoneRegex = new Regex(@"^\+[1-9]\d{1,14}$", RegexOptions.Compiled);
+
         private readonly ICallDetailRepository _detailRepository;
         private readonly ICallRateService _callRateService;
         private readonly ICustomerRepository _customerRepository;
@@ -25,36 +25,168 @@ namespace CallRatingService.Application.Command
 
         public async Task<List<RatedOutputResponse>> Handle(CallDetailCommand request, CancellationToken cancellationToken)
         {
-            var callDetail = request.CallDetails.Select(c => new CallDetail()
+            var result = new List<RatedOutputResponse>();
+            var validCallDetails = new List<CallDetail>();
+;
+            foreach (var item in request.CallDetails)
             {
-                CallDetailCustomerId = c.CustomerNumber,
-                CallDate = c.CallDate,
-                DestinationNumber = c.DestinationNumber,
-                DurationSeconds = c.DurationSeconds
-            }).ToList();
+                bool isValidCall = true;
 
-            await Validate(callDetail);
+                // Validate Destination Number
+                isValidCall = ValidateDestinationNumber(result, item);
+                if (!isValidCall)
+                {
+                    continue;
+                }
 
-            // Clculate call cost
-            var result = await _callRateService.CalculateCallRate(callDetail);
+                // Validate cutomerNumber + Rate available
+                isValidCall = await ValidateCustomer(result, item);
+                if (!isValidCall)
+                {
+                    continue;
+                }
 
-            // save the CDR 
-            await _detailRepository.SaveCallDetail(callDetail);
+                // validation durationSeconds
+                isValidCall = ValidateDurationSeconds(result, item);
+
+                if (!isValidCall)
+                {
+                    continue;
+                }
+
+                // validation CallDate
+                if (!DateTime.TryParse(item.CallDate, out DateTime parsedDate))
+                {
+                    result.Add(new RatedOutputResponse()
+                    {
+                        CustomerId = item.CustomerNumber,
+                        DestinationNumber = item.DestinationNumber,
+                        DurationSeconds = item.DurationSeconds,
+                        Valid = false,
+                        ErrorMessage = $"Call Date Invalid  : {item.CallDate}"
+                    });
+                    continue;
+                }
+
+                // Calculate call cost
+                var callDetail = new CallDetail
+                {
+                    CallDate = parsedDate,
+                    CallDetailCustomerId = item.CustomerNumber,
+                    DestinationNumber = item.DestinationNumber,
+                    DurationSeconds = item.DurationSeconds
+                };
+
+                var rateedResult = await _callRateService.CalculateCallRate(callDetail);
+                result.Add(rateedResult);
+
+                // Add CDR
+                validCallDetails.Add(callDetail);
+            }
+
+            // save only valid CDRs 
+            await _detailRepository.SaveCallDetail(validCallDetails);
 
             return result;
         }
 
-        private async Task Validate(List<CallDetail> callDetail)
+        private static bool ValidateDurationSeconds(List<RatedOutputResponse> result, CallData item)
         {
-            foreach (var item in callDetail)
+            if (item.DurationSeconds <= 0)
             {
-                var customer = await _customerRepository.GetCustomerAsync(item.CallDetailCustomerId);
-
-                if (customer == null)
+                result.Add(new RatedOutputResponse()
                 {
-                    throw new NotFoundException($"Customer with CustomerId {item.CallDetailCustomerId} does not exist.");
-                }
+                    CustomerId = item.CustomerNumber,
+                    DestinationNumber = item.DestinationNumber,
+                    DurationSeconds = item.DurationSeconds,
+                    Valid = false,
+                    ErrorMessage = $"Duration Seconds invalid: {item.DurationSeconds}"
+                });
+                return false;
             }
+
+            return true;
+        }
+
+        private bool ValidateDestinationNumber(List<RatedOutputResponse> result, CallData item)
+        {
+            if (string.IsNullOrWhiteSpace(item.DestinationNumber))
+            {
+                result.Add(new RatedOutputResponse()
+                {
+                    CustomerId = item.CustomerNumber,
+                    DestinationNumber = item.DestinationNumber,
+                    DurationSeconds = item.DurationSeconds,
+                    Valid = false,
+                    ErrorMessage = $"Distination number invalid: {item.DestinationNumber}"
+                });
+                return false;
+            }
+            if (!E164PhoneRegex.IsMatch(item.DestinationNumber))
+            {
+                result.Add(new RatedOutputResponse()
+                {
+                    CustomerId = item.CustomerNumber,
+                    DestinationNumber = item.DestinationNumber,
+                    DurationSeconds = item.DurationSeconds,
+                    Valid = false,
+                    ErrorMessage = $"Distination number invalid: {item.DestinationNumber}"
+                });
+                return false;
+            }
+
+            return true;
+        }
+
+        private async Task<bool> ValidateCustomer(List<RatedOutputResponse> result, CallData item)
+        {
+            if (item.CustomerNumber <= 0)
+            {
+                result.Add(new RatedOutputResponse()
+                {
+                    CustomerId = item.CustomerNumber,
+                    DestinationNumber = item.DestinationNumber,
+                    DurationSeconds = item.DurationSeconds,
+                    Valid = false,
+                    ErrorMessage = $"Customer not found for the id  : {item.CustomerNumber}"
+                });
+                return false;
+            }
+
+            var customerWithRates = await _customerRepository.GetCustomerWithRatesAsync(item.CustomerNumber);
+
+            if (customerWithRates == null)
+            {
+                result.Add(new RatedOutputResponse()
+                {
+                    CustomerId = item.CustomerNumber,
+                    DestinationNumber = item.DestinationNumber,
+                    DurationSeconds = item.DurationSeconds,
+                    Valid = false,
+                    ErrorMessage = $"Customer Rates not found for the customer  : {item.CustomerNumber}"
+                });
+                return false;
+            }
+
+            // validate rate
+            var type = CallType.GetCallTypeByNumber(item.DestinationNumber);
+
+            var rate = customerWithRates.CustomerRateCard?.Rates.Find(r => r.CallType == type.Type);
+
+            if (rate == null)
+            {
+                result.Add(new RatedOutputResponse()
+                {
+                    CustomerId = item.CustomerNumber,
+                    DestinationNumber = item.DestinationNumber,
+                    DurationSeconds = item.DurationSeconds,
+                    Valid = false,
+                    ErrorMessage = $"Rate not found  for: {item.DestinationNumber}"
+                });
+                return false;
+            }
+
+            return true;
         }
     }
 }

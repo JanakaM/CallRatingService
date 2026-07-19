@@ -20,5 +20,9 @@ namespace CallRatingService.Application
         public decimal RateApplied { get; set; }
 
         public decimal Cost { get; set; }
+
+        public bool Valid { get; set; } = true;
+
+        public string ErrorMessage { get; set; }
     }
 }

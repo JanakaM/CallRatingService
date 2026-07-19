@@ -7,6 +7,6 @@ namespace CallRatingService.Application
 {
     public interface ICallRateService
     {
-        Task<List<RatedOutputResponse>> CalculateCallRate(List<CallDetail> callDetails);
+        Task<RatedOutputResponse> CalculateCallRate(CallDetail callDetails);
     }
 }

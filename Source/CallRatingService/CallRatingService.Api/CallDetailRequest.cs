@@ -6,8 +6,7 @@ namespace CallRatingService.Api
     {
         public int CustomerNumber { get; set; }
 
-        [Required]
-        public DateTime CallDate { get; set; }
+        public string CallDate { get; set; }
 
         public string DestinationNumber { get; set; }
 
