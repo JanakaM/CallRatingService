@@ -55,12 +55,12 @@ artifacts/
 ## SQLite Databases
 # It is highly recommended to ignore local SQLite DB files 
 # so they don't overwrite other developers' local data.
-*.db
-*.db-journal
-*.db-shm
-*.db-wal
-*.sqlite
-*.sqlite3
+# *.db
+# *.db-journal
+# *.db-shm
+# *.db-wal
+# *.sqlite
+# *.sqlite3
 
 ## ASP.NET Core Secrets & Local Settings
 appsettings.Development.json

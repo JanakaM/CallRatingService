@@ -23,6 +23,7 @@ namespace CallRatingService.Infrastructure
 
         public async Task<List<Customer>> GetCustomersAsync(int page, int numberOfRecords)
         {
+            // This make sure EF not returning all Customer records from DB  
             int recordsToSkip = (page - 1) * numberOfRecords;
 
             var customers = await _dbContext.Customers

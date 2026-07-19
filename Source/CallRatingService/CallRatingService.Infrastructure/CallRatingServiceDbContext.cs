@@ -19,7 +19,7 @@ namespace CallRatingService.Infrastructure
             base.OnModelCreating(modelBuilder);
 
             // Prepopulate Cutomer Data for Simply the Solution & and Demo purpose only
-            // In real world application will have Migration script / Cutomer Add Endpoint 
+            // In real world application will have Migration script / Add Cutomer Endpoint 
             modelBuilder.Entity<Customer>(e =>
             {
                 e.HasKey(x => x.CustomerId);
