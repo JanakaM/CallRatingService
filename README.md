@@ -36,6 +36,8 @@ Example  :   "ConnectionString": "Data Source=C:/Janaka/GitHub/CallRatingService
 
 6. I will add integration tests which can be run in deployment pipeline or run in local. For this I will configure in memory databse too. 
 
+7. Add exception handling. Add try catch blocks. For example add exception handling where access external resorces. (DB)
+
 
 ### Setting up SQLite in local PC instruction
 
