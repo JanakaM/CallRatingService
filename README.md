@@ -6,10 +6,11 @@
 2. Clone the repository.
 3. Once clone the repo update appsetting.json file connectionstring property value as your cloned repo path. Data.db file is located in SolutionItems folder. 
 Example  :   "ConnectionString": "Data Source=C:/Janaka/GitHub/CallRatingService/SolutionItems/Data.Db"
-4. Initially Data.db is empty database. Once solution run Db schemas wiil be created. 
-5. OpenAPi / Scalar link can be used to make APi requests. example link
+4. Initially Data.db is empty database. Once solution run first time Db tables wiil be created. 
+5. Set CallRatingServiceApi project as start up project and run/debug the solution.
+6. OpenAPi / Scalar link can be used to make APi requests. example link
    https://localhost:7226/scalar/v1#tag/endpoints (change the port number as required)
-6. To view prepopulated customers please use this endpoint. set 1 as page querystring parameter.
+7. To view prepopulated customers please use this endpoint. provide page.   querystring parameter.
    https://localhost:7226/api/customer?page=1  
 
 
@@ -32,11 +33,15 @@ Example  :   "ConnectionString": "Data Source=C:/Janaka/GitHub/CallRatingService
 
 4. I will Add Automapper package for object mapping inbetween layers. Currently use raw mapping to keep simple the solution.
 
-5. I will add unit tests to increase code coverage and cover more scenarios which can be available in real world applications.
+5. I will add more unit tests to increase code coverage and cover more scenarios which can be available in real world applications.
 
 6. I will add integration tests which can be run in deployment pipeline or run in local. For this I will configure in memory databse too. 
 
 7. Add exception handling. Add try catch blocks. For example add exception handling where access external resorces. (DB)
+
+8. I will do few rounds of refactoring to improve the code quality. 
+
+9. I will add more folders to seperate diffrent sections within project. Currently try to keep files in flat structure to simplyfy.
 
 
 ### Setting up SQLite in local PC instruction
@@ -47,6 +52,6 @@ Example  :   "ConnectionString": "Data Source=C:/Janaka/GitHub/CallRatingService
 2.	 Add this folder path to environment variable (recommended but optional)
 3.	Add VS extension “SQL Server Compact Toolbox” to view SQLite Database and tables. 
 4.	Once extension added. Find the window “Sqllite/Sql ServerCompact toolbox” in VS. Using this window. Right click on  “Data Connection“ -> Create (create Database.) 	
-5.	For solutions which DB already has been created, use the option Add connection using solution.  This will add the DB connection to the Sqlite toolbox. This will enable view and run queries. 
+5.	For solutions which DB already has been created, use the option Add connection using solution.  This will add the DB connection to the Sqlite toolbox. This will enable view and run queries of tables. 
 
 

@@ -1,5 +1,6 @@
 ﻿using CallRatingService.Application.Exceptions;
 using CallRatingService.Model;
+using CallRatingService.Model.Enum;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,17 @@ namespace CallRatingService.Application.Command
             {
                 throw new NotFoundException($"Customer with CustomerId {request.CustomerId} does not exist.");
             }
+
+            foreach (var rateCard in request.Rates) {
+
+                var callType = CallType.List().Find(x => x.Type == rateCard.CallType);
+                
+                if (callType == null)
+                {
+                    throw new NotFoundException($"Call Type does not exist : {rateCard.CallType}");
+                }
+            }
+
         }
     }
 }
